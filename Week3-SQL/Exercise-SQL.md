@@ -15,26 +15,56 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 
 5. Write a query that tells us how many rows are in the table. 
 	```
-	[YOUR QUERY HERE]
+	SELECT COUNT(*) FROM `bigquery-public-data.austin_311.311_service_requests`
 	```
+Rows: 1042373
 
 7. Write a query that tells us how many _distinct_ values there are in the complaint_description column.
 	``` 
-	[YOUR QUERY HERE]
+	SELECT 
+        COUNT(DISTINCT complaint_description)
+    FROM 
+        `bigquery-public-data.austin_311.311_service_requests`
 	```
+    Distinct values: 158
   
 8. Write a query that counts how many times each owning_department appears in the table and orders them from highest to lowest. 
 	``` 
-	[YOUR QUERY HERE]
+	SELECT 
+        COUNT(*) 
+    FROM 
+        `bigquery-public-data.austin_311.311_service_requests` 
+    GROUP BY  
+        owning_department 
+    ORDER BY 
+        COUNT(*) DESC
 	```
 
 9. Write a query that lists the top 5 complaint_description that appear most and the amount of times they appear in this table. (hint... limit)
 	```
-	[YOUR QUERY HERE]
+	SELECT 
+        complaint_description, COUNT(*) 
+    FROM 
+        `bigquery-public-data.austin_311.311_service_requests` 
+    GROUP BY 
+        complaint_description 
+    ORDER BY 
+        COUNT(*) DESC 
+    LIMIT 
+        5
 	  ```
 10. Write a query that lists and counts all the complaint_description, just for the where the owning_department is 'Animal Services Office'.
 	```
-	[YOUR QUERY HERE]
+	SELECT 
+        complaint_description, COUNT(*) 
+    FROM 
+        `bigquery-public-data.austin_311.311_service_requests` 
+    WHERE 
+        owning_department = 'Animal Services Office' 
+    GROUP BY 
+        complaint_description 
+    ORDER BY 
+        COUNT(*) DESC
 	```
 
 11. Write a query to check if there are any duplicate values in the unique_key column (hint.. There are two was to do this, one is to use a temporary table for the groupby, then filter for values that have more than one count, or, using just one table but including the  `having` function). 
@@ -53,25 +83,46 @@ For this section of the exercise we will be using the `bigquery-public-data.aust
 ### For the next section, use the  `bigquery-public-data.google_political_ads.advertiser_weekly_spend` table.
 1. Using the `advertiser_weekly_spend` table, write a query that finds the advertiser_name that spent the most in usd. 
 	```
-	[YOUR QUERY HERE]
+	SELECT 
+        advertiser_name, SUM(spend_usd) as total_spent  
+    FROM 
+        `bigquery-public-data.google_political_ads.advertiser_weekly_spend` 
+    GROUP BY 
+        advertiser_name 
+    ORDER BY 
+        total_spent DESC 
+    LIMIT 
+        1
 	```
+   Advertiser name: Biden For President
+   
 2. Who was the 6th highest spender? (No need to insert query here, just type in the answer.)
 	```
-	[YOUR ANSWER HERE]
+		SENATE LEADERSHIP FUND
 	```
 
 3. What week_start_date had the highest spend? (No need to insert query here, just type in the answer.)
 	```
-	[YOUR ANSWER HERE]
+	2020-10-18 with spend_usd 10419100
+
 	```
 
 4. Using the `advertiser_weekly_spend` table, write a query that returns the sum of spend by week (using week_start_date) in usd for the month of August only. 
 	```
-	[YOUR QUERY HERE]
+	SELECT 
+        The week_start_date, SUM(spend_usd) as spent_this_week  
+    FROM 
+        `bigquery-public-data.google_political_ads.advertiser_weekly_spend` 
+    WHERE 
+        (EXTRACT(MONTH FROM week_start_date) = 8) 
+    GROUP BY 
+        week_start_date 
+    ORDER BY 
+        spent_this_week DESC;
 	```
 6.  How many ads did the 'TOM STEYER 2020' campaign run? (No need to insert query here, just type in the answer.)
 	```
-	[YOUR ANSWER HERE]
+	50
 	```
 7. Write a query that has, in the US region only, the total spend in usd for each advertiser_name and how many ads they ran. (Hint, you're going to have to join tables for this one). 
 	```
